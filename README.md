@@ -25,8 +25,11 @@ Sistemul este compus din următoarele entități interconectate:
 ## 3. Funcționalități Principale pe Etape
 **Gestiune și Acces**
 Autentificare: Role-based access control (Admin vs Client).
+<img width="2541" height="1396" alt="image" src="https://github.com/user-attachments/assets/c24bd49d-0faa-448b-9ea1-3e0bcc7a648b" />
 
 CRUD Utilizatori & Dispozitive: Gestiunea completă a bazei de date de către administratori.
+<img width="2518" height="1413" alt="Screenshot 2026-01-22 124648" src="https://github.com/user-attachments/assets/a929eb12-2de4-426b-bf4d-6c2514338404" />
+<img width="2557" height="1422" alt="Screenshot 2026-01-22 124700" src="https://github.com/user-attachments/assets/20922149-66d5-489a-842b-865d5ba63a04" />
 
 Asociere: Maparea dispozitivelor către utilizatori specifici.
 
@@ -35,12 +38,19 @@ Messaging: Utilizarea RabbitMQ pentru a decupla simulatorul de sistemul de monit
 
 Procesare Orară: Agregarea automată a valorilor primite de la senzori pe parcursul fiecărei ore.
 
-Vizualizare: Grafice interactive realizate cu Recharts care afișează consumul istoric.
+Vizualizare: Grafice interactive realizate cu Recharts care afișează consumul is<img width="2490" height="1411" alt="Screenshot 2026-01-22 124816" src="https://github.com/user-attachments/assets/433edfcf-b964-4445-a235-e99521434814" />
+toric.
 
 **Real-Time & AI Support**
 Notificări Live: Alerte instantanee transmise prin WebSockets atunci când consumul orar depășește pragul configurat.
 
 Chatbot AI: Asistent virtual capabil să răspundă la întrebări despre sistem, folosind un Prompt de Sistem optimizat pentru suport clienți.
+<img width="2556" height="1423" alt="Screenshot 2026-01-22 124849" src="https://github.com/user-attachments/assets/022db0ab-97e6-4a42-a3ea-0d3bfe427abb" />
+
+Custommer Suport: Clientul poate să aleagă optțiunea de a vorbi cu un administrator.
+<img width="2556" height="1423" alt="Screenshot 2026-01-22 124849" src="https://github.com/user-attachments/assets/98264fab-5750-44f1-82bc-7aff77d733f5" />
+
+<img width="2509" height="1416" alt="Screenshot 2026-01-22 124943" src="https://github.com/user-attachments/assets/e637d7e3-507e-418a-bf23-af58b538b11f" />
 
 ## 4. Tehnologii și Infrastructură
 Backend: Java 21, Spring Boot 3.4.1, Spring Security, JPA, RabbitMQ.
