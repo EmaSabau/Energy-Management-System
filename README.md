@@ -1,69 +1,82 @@
-# Sistem de Management al Energiei - Arhitectură Microservicii
+# Energy Management System 
 
-## 1. Prezentare Generală
-Sistemul de Management al Energiei este o aplicație distribuită bazată pe microservicii, concepută pentru monitorizarea consumului de energie în timp real. Permite administratorilor să gestioneze utilizatorii și dispozitivele inteligente, oferind clienților monitorizare live, grafice de consum și asistență prin chat generat de Inteligență Artificială.
+## 1. Descrierea Proiectului
+Acest sistem reprezintă o platformă completă pentru monitorizarea și gestionarea consumului de energie al dispozitivelor inteligente dintr-o locuință. Proiectul evoluează de la o structură de microservicii de bază (CRUD) la un sistem distribuit complex care utilizează comunicare asincronă, procesare de date în timp real și inteligență artificială.
 
-## 2. Arhitectura Sistemului
+## 2. Arhitectura Microserviciilor
+Sistemul este compus din următoarele entități interconectate:
 
-### Componente Principale:
-- **Frontend**: Aplicație React (ikone Lucide, Tailwind CSS) pentru vizualizarea datelor și notificări.
-- **Authorization Service**: Gestionează autentificarea și securitatea prin token-uri JWT.
-- **User Service**: Managementul profilelor de utilizator.
-- **Device Service**: Gestiunea contoarelor inteligente și asocierea lor cu utilizatorii.
-- **Monitoring Service**: Procesează datele de la senzori și detectează depășirea limitei de consum orar.
-- **WebSocket Service**: Punte de comunicare în timp real pentru alerte și chat.
-- **Customer Support Service**: Asistent inteligent integrat cu **Google Gemini 2.0 Flash**.
-- **Simulator**: Script Python care generează automat citiri de senzori.
-- **RabbitMQ**: Broker de mesaje pentru comunicarea asincronă între componente.
-- **Traefik**: API Gateway și Reverse Proxy pentru rutarea cererilor.
+**Frontend (React):** Interfață de vizualizare cu grafice de consum orar, panouri de administrare și widget de chat AI.
 
-### Tehnologii Utilizate:
-- **Backend**: Java 21, Spring Boot 3.4.1, Spring Security, JPA/Hibernate, RabbitMQ.
-- **AI**: Google Gemini API (Model: gemini-2.0-flash).
-- **Frontend**: React 18, WebSocket (STOMP/SockJS), Chart.js.
-- **Baze de date**: PostgreSQL 15 (Instanțe separate pentru izolare).
-- **Infrastructură**: Docker & Docker Compose, Traefik v3.0.
+**Authorization Service:** Gestionează securitatea aplicației, autentificarea utilizatorilor și generarea token-urilor JWT.
 
-## 3. Configurare și Instalare
+**User Management Service:** Administrează conturile utilizatorilor (Administrator și Client) și sincronizează datele între servicii.
 
-### Cerințe Minime:
-- Docker și Docker Compose instalate.
-- O cheie API validă pentru Google Gemini.
+**Device Management Service:** Gestionează inventarul de dispozitive inteligente și limitele de consum ale acestora.
 
-### Pași pentru Rulare:
-1. Creează un fișier `.env` în directorul rădăcină:
-   ```env
-   POSTGRES_USER=utilizatorul_tau
-   POSTGRES_PASSWORD=parola_ta
-   GEMINI_API_KEY=cheia_ta_gemini_aici
+**Monitoring Service:** Procesează măsurătorile de energie, agregă consumul orar și detectează automat depășirile de prag.
 
-Pornește serviciile folosind Docker Compose:
+**WebSocket Service:** Releu pentru comunicații instantanee, trimițând alerte de supraconsum și mesaje de chat direct în browserul utilizatorului.
+
+**Customer Support Service:** Modul inteligent care utilizează Google Gemini 2.0 Flash pentru a oferi suport tehnic și sfaturi energetice în limba română.
+
+**Device Data Simulator:** Aplicație Python care emulează comportamentul senzorilor fizici, transmițând date la intervale de 10 minute.
+
+## 3. Funcționalități Principale pe Etape
+**Gestiune și Acces**
+Autentificare: Role-based access control (Admin vs Client).
+
+CRUD Utilizatori & Dispozitive: Gestiunea completă a bazei de date de către administratori.
+
+Asociere: Maparea dispozitivelor către utilizatori specifici.
+
+**Comunicare Asincronă și Monitorizare**
+Messaging: Utilizarea RabbitMQ pentru a decupla simulatorul de sistemul de monitorizare.
+
+Procesare Orară: Agregarea automată a valorilor primite de la senzori pe parcursul fiecărei ore.
+
+Vizualizare: Grafice interactive realizate cu Recharts care afișează consumul istoric.
+
+**Real-Time & AI Support**
+Notificări Live: Alerte instantanee transmise prin WebSockets atunci când consumul orar depășește pragul configurat.
+
+Chatbot AI: Asistent virtual capabil să răspundă la întrebări despre sistem, folosind un Prompt de Sistem optimizat pentru suport clienți.
+
+## 4. Tehnologii și Infrastructură
+Backend: Java 21, Spring Boot 3.4.1, Spring Security, JPA, RabbitMQ.
+
+AI Integration: Google Gemini API (model gemini-2.0-flash).
+
+Frontend: React, STOMP.js (pentru WebSockets), Recharts.
+
+Mesagerie: RabbitMQ (cozi pentru date senzori, alerte și chat).
+
+Infrastructură: Docker, Docker Compose și Traefik ca Reverse Proxy/Gateway.
+
+## 5. Ghid de Instalare
+Configurare Mediu
+Creați un fișier .env în rădăcina proiectului cu următoarele chei:
+
+Fragment de cod
+<pre>
+POSTGRES_USER=guest
+POSTGRES_PASSWORD=guest
+GEMINI_API_KEY=cheia_ta_gemini_aici
+</pre>
+Lansare Aplicație
+Construiți și lansați containerele:
+
+<pre>
 docker-compose up --build -d
+</pre>
+Accesați interfața web la: http://localhost.
 
-Accesează serviciile:
-Interfața Web: http://localhost (Port 80 prin Traefik)
-Panou Control RabbitMQ: http://localhost:15672 (guest/guest)
-Dashboard Traefik: http://localhost:8090
+Monitorizați mesajele în RabbitMQ Management: http://localhost:15672 (guest/guest).
 
-4. Workflow Mesagerie (RabbitMQ)
-Sistemul utilizează cozi pentru a asigura funcționarea asincronă:
-device_data_queue: Simulator -> Monitoring (Trimite măsurătorile brute).
-overconsumption_alerts_queue: Monitoring -> WebSocket (Semnalează depășirea limitei).
-chat_request_queue: WebSocket -> Customer Support (Întrebările utilizatorilor).
-chat_response_queue: Customer Support -> WebSocket (Răspunsuri AI/Reguli).
+Rulare Simulator
+Simulatorul Python poate fi rulat manual pentru a genera date instantanee:
 
-5. Funcționalități Cheie
-Notificări în Timp Real
-Când consumul cumulat al unui dispozitiv depășește limita setată:
-Monitoring Service identifică breșa.
-Un eveniment este trimis prin RabbitMQ.
-WebSocket Service notifică utilizatorul specific.
-Frontend-ul afișează o alertă vizuală în partea stângă a ecranului.
-Asistent Suport AI (Gemini)
-Chatbot-ul integrat oferă suport în limba română:
-Contextual: Știe să ofere informații despre sistemul de energie.
-Avansat: Folosește Gemini 2.0 Flash pentru a răspunde la întrebări complexe dacă regulile locale nu se potrivesc.
-
-6. Testare Manuală (Supraconsum)
-Pentru a forța o alertă de supraconsum din Command Prompt (Windows):
-docker exec -it rabbitmq rabbitmqadmin publish exchange=amq.default routing_key=device_data_queue payload="{\"timestamp\": \"2026-01-15T10:00:00\", \"device_id\": \"ID_UUID_REAL\", \"measurement_value\": 700.0}"
+<pre>
+python simulator.py
+</pre>
+Acesta va trimite datele istorice de la 00:00 (Backfill) și va continua să trimită măsurători în timp real la fiecare 10 minute.
