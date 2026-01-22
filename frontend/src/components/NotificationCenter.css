@@ -1,0 +1,115 @@
+.notifications-container {
+    position: fixed !important;
+    top: 100px !important;
+    left: 20px !important;
+    right: auto !important;
+    width: 380px;
+    z-index: 10000 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+}
+
+.notification-toast {
+    pointer-events: auto;
+    width: 380px;
+    padding: 16px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    animation: slideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-120%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.notification-toast.overconsumption {
+    border-left: 5px solid #ef4444;
+    background: #fef2f2;
+}
+
+.notification-toast.warning {
+    border-left: 5px solid #f59e0b;
+    background: #fffbeb;
+}
+
+.notification-toast.info {
+    border-left: 5px solid #3b82f6;
+    background: #eff6ff;
+}
+
+.notification-toast.success {
+    border-left: 5px solid #10b981;
+    background: #f0fdf4;
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-title {
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 4px;
+    color: #111827;
+}
+
+.toast-message {
+    font-size: 14px;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+.notif-time {
+    display: block;
+    font-size: 11px;
+    color: #9ca3af;
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+.toast-close {
+    background: #f3f4f6;
+    border: none;
+    font-size: 20px;
+    color: #6b7280;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.toast-close:hover {
+    background: #e5e7eb;
+    color: #111827;
+    transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+    .notifications-container {
+        left: 10px !important;
+        right: 10px !important;
+        width: calc(100% - 20px);
+    }
+
+    .notification-toast {
+        width: 100%;
+    }
+}

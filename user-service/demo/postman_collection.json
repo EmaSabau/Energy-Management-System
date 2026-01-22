@@ -1,0 +1,97 @@
+{
+  "info": {
+    "name": "User Service API",
+    "_postman_id": "user-service-demo",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8081" },
+    { "key": "resource", "value": "users" },
+    { "key": "userId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "GET – List users (200)",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Accept", "value": "application/json"}],
+        "url": { "raw": "{{baseUrl}}/{{resource}}", "host": ["{{baseUrl}}"], "path": ["{{resource}}"] }
+      }
+    },
+    {
+      "name": "POST – Create user (201) [valid]",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"John Doe\",\n  \"address\": \"123 Street\",\n  \"age\": 30\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/{{resource}}", "host": ["{{baseUrl}}"], "path": ["{{resource}}"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Created', () => pm.response.to.have.status(201));",
+              "let id = null;",
+              "const loc = pm.response.headers.get('Location');",
+              "if (loc) id = loc.split('/').slice(-1)[0];",
+              "else {",
+              "  try {",
+              "    const body = pm.response.json();",
+              "    if (body && body.id) id = body.id;",
+              "  } catch(e) {}",
+              "}",
+              "pm.collectionVariables.set('userId', id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET – Get user by ID (200)",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Accept", "value": "application/json"}],
+        "url": { "raw": "{{baseUrl}}/{{resource}}/{{userId}}", "host": ["{{baseUrl}}"], "path": ["{{resource}}","{{userId}}"] }
+      }
+    },
+    {
+      "name": "PUT – Replace user (204)",
+      "request": {
+        "method": "PUT",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"{{userId}}\",\n  \"name\": \"Jane Doe\",\n  \"address\": \"New Address\",\n  \"age\": 35\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/{{resource}}/{{userId}}", "host": ["{{baseUrl}}"], "path": ["{{resource}}","{{userId}}"] }
+      }
+    },
+    {
+      "name": "PATCH – Partial update (204)",
+      "request": {
+        "method": "PATCH",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": { "mode": "raw", "raw": "{ \"address\": \"Updated Address\" }" },
+        "url": { "raw": "{{baseUrl}}/{{resource}}/{{userId}}", "host": ["{{baseUrl}}"], "path": ["{{resource}}","{{userId}}"] }
+      }
+    },
+    {
+      "name": "DELETE – Remove user (204)",
+      "request": {
+        "method": "DELETE",
+        "url": { "raw": "{{baseUrl}}/{{resource}}/{{userId}}", "host": ["{{baseUrl}}"], "path": ["{{resource}}","{{userId}}"] }
+      }
+    },
+    {
+      "name": "GET – Invalid UUID (400)",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/{{resource}}/not-a-uuid", "host": ["{{baseUrl}}"], "path": ["{{resource}}","not-a-uuid"] }
+      }
+    }
+  ]
+}

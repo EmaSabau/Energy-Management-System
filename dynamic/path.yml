@@ -1,0 +1,136 @@
+http:
+  routers:
+    frontend:
+      rule: "Host(`localhost`)"
+      entryPoints:
+        - web
+      service: frontend-service
+      middlewares:
+        - cors
+
+    auth-api:
+      rule: "PathPrefix(`/api/auth`)"
+      entryPoints:
+        - web
+      service: auth-service
+      middlewares:
+        - cors
+        - strip-auth-prefix
+      priority: 100
+
+    users-api:
+      rule: "PathPrefix(`/api/users`)"
+      entryPoints:
+        - web
+      service: users-service
+      middlewares:
+        - cors
+        - jwt-auth
+      priority: 100
+
+    devices-api:
+      rule: "PathPrefix(`/api/devices`)"
+      entryPoints:
+        - web
+      service: devices-service
+      middlewares:
+        - cors
+        - jwt-auth
+      priority: 100
+
+    monitoring-api:
+      rule: "PathPrefix(`/api/monitoring`)"
+      entryPoints:
+        - web
+      service: monitoring-service
+      middlewares:
+        - cors
+      priority: 100
+      
+    websocket:
+      rule: "PathPrefix(`/ws`)"
+      entryPoints:
+        - web
+      service: websocket-service
+      middlewares:
+        - cors
+      priority: 110
+
+    chat-api:
+      rule: "PathPrefix(`/api/chat`)"
+      entryPoints:
+        - web
+      service: customersupport-service
+      middlewares:
+        - cors
+      priority: 100
+
+  middlewares:
+    strip-auth-prefix:
+      stripPrefix:
+        prefixes:
+          - "/api/auth"
+
+    cors:
+      headers:
+        accessControlAllowOriginList:
+          - "http://localhost:3000"
+          - "http://localhost"
+        accessControlAllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        accessControlAllowHeaders:
+          - Authorization
+          - Content-Type
+          - Upgrade
+          - Connection
+        accessControlAllowCredentials: true
+        accessControlExposeHeaders:
+          - "*"
+
+    jwt-auth:
+      forwardAuth:
+        address: "http://auth-service:8080/verify-jwt"
+        trustForwardHeader: true
+        authResponseHeaders:
+          - X-User-Name
+          - X-User-Roles
+
+  services:
+    frontend-service:
+      loadBalancer:
+        servers:
+          - url: "http://frontend:80"
+
+    auth-service:
+      loadBalancer:
+        servers:
+          - url: "http://auth-service:8080"
+
+    users-service:
+      loadBalancer:
+        servers:
+          - url: "http://user-service:8080"
+
+    devices-service:
+      loadBalancer:
+        servers:
+          - url: "http://devices-service:8080"
+    
+    monitoring-service:
+      loadBalancer:
+        servers:
+          - url: "http://monitoring-service:8080"
+
+    websocket-service:
+      loadBalancer:
+        servers:
+          - url: "http://websocket-service:8080"
+
+    customersupport-service:
+      loadBalancer:
+        servers:
+          - url: "http://customersupport-service:8080"

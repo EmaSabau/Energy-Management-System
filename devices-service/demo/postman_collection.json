@@ -1,0 +1,92 @@
+{
+  "info": {
+    "name": "Devices Service API",
+    "_postman_id": "devices-service-demo",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8083" },
+    { "key": "resource", "value": "devices" },
+    { "key": "deviceId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "GET – List devices (200)",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Accept", "value": "application/json"}],
+        "url": { "raw": "{{baseUrl}}/{{resource}}", "host": ["{{baseUrl}}"], "path": ["{{resource}}"] }
+      }
+    },
+    {
+      "name": "POST – Create device (201) [valid]",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Smart Meter\",\n  \"address\": \"Building 1\",\n  \"age\": 2,\n  \"energyConsumed\": 123.45\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/{{resource}}", "host": ["{{baseUrl}}"], "path": ["{{resource}}"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Created', () => pm.response.to.have.status(201));",
+              "let id = null;",
+              "const loc = pm.response.headers.get('Location');",
+              "if (loc) id = loc.split('/').slice(-1)[0];",
+              "else { try { const body = pm.response.json(); if (body && body.id) id = body.id; } catch(e) {} }",
+              "pm.collectionVariables.set('deviceId', id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET – Get device by ID (200)",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Accept", "value": "application/json"}],
+        "url": { "raw": "{{baseUrl}}/{{resource}}/{{deviceId}}", "host": ["{{baseUrl}}"], "path": ["{{resource}}","{{deviceId}}"] }
+      }
+    },
+    {
+      "name": "PUT – Replace device (204)",
+      "request": {
+        "method": "PUT",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"{{deviceId}}\",\n  \"name\": \"Smart Meter X\",\n  \"address\": \"Building 1\",\n  \"age\": 3,\n  \"energyConsumed\": 200.5\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/{{resource}}/{{deviceId}}", "host": ["{{baseUrl}}"], "path": ["{{resource}}","{{deviceId}}"] }
+      }
+    },
+    {
+      "name": "PATCH – Partial update (204)",
+      "request": {
+        "method": "PATCH",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": { "mode": "raw", "raw": "{ \"energyConsumed\": 250.0 }" },
+        "url": { "raw": "{{baseUrl}}/{{resource}}/{{deviceId}}", "host": ["{{baseUrl}}"], "path": ["{{resource}}","{{deviceId}}"] }
+      }
+    },
+    {
+      "name": "DELETE – Remove device (204)",
+      "request": {
+        "method": "DELETE",
+        "url": { "raw": "{{baseUrl}}/{{resource}}/{{deviceId}}", "host": ["{{baseUrl}}"], "path": ["{{resource}}","{{deviceId}}"] }
+      }
+    },
+    {
+      "name": "GET – Invalid UUID (400)",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/{{resource}}/not-a-uuid", "host": ["{{baseUrl}}"], "path": ["{{resource}}","not-a-uuid"] }
+      }
+    }
+  ]
+}

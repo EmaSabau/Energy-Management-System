@@ -1,0 +1,14 @@
+# Fisiere de configurare sensibile
+.env
+
+# Config simulator in orice microserviciu
+**/simulator/config.json
+
+# Alte ignorari utile
+node_modules/
+dist/
+build/
+out/
+.idea/
+*.log
+ 

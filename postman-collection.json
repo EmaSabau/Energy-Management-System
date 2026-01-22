@@ -1,0 +1,207 @@
+{
+  "info": {
+    "name": "EMS Docker Collection",
+    "_postman_id": "ems-docker-001",
+    "description": "Postman collection for AuthService, AppUserService, and DevicesService running behind Traefik",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "AuthService - Register",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"andrei\",\n  \"email\": \"andrei@example.com\",\n  \"password\": \"123456\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost/api/auth/register",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["api","auth","register"]
+        }
+      }
+    },
+    {
+      "name": "AuthService - Login",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"andrei\",\n  \"password\": \"123456\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost/api/auth/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["api","auth","login"]
+        }
+      }
+    },
+    {
+      "name": "AppUserService - Get All Users",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+        "url": {
+          "raw": "http://localhost/api/users",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["api","users"]
+        }
+      }
+    },
+    {
+      "name": "AppUserService - Get User By ID",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+        "url": {
+          "raw": "http://localhost/api/users/{{userId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["api","users","{{userId}}"]
+        }
+      }
+    },
+    {
+      "name": "AppUserService - Create User",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"maria\",\n  \"email\": \"maria@example.com\",\n  \"role\": \"ROLE_CLIENT\",\n  \"active\": true,\n  \"age\": 22\n}"
+        },
+        "url": {
+          "raw": "http://localhost/api/users",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["api","users"]
+        }
+      }
+    },
+    {
+      "name": "AppUserService - Update User",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"maria_updated\",\n  \"email\": \"maria_new@example.com\",\n  \"role\": \"ROLE_CLIENT\",\n  \"active\": true,\n  \"age\": 23\n}"
+        },
+        "url": {
+          "raw": "http://localhost/api/users/{{userId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["api","users","{{userId}}"]
+        }
+      }
+    },
+    {
+      "name": "AppUserService - Delete User",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+        "url": {
+          "raw": "http://localhost/api/users/{{userId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["api","users","{{userId}}"]
+        }
+      }
+    },
+    {
+      "name": "DevicesService - Get All Devices",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+        "url": {
+          "raw": "http://localhost/api/devices",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["api","devices"]
+        }
+      }
+    },
+    {
+      "name": "DevicesService - Get Device By ID",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+        "url": {
+          "raw": "http://localhost/api/devices/{{deviceId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["api","devices","{{deviceId}}"]
+        }
+      }
+    },
+    {
+      "name": "DevicesService - Create Device",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Device1\",\n  \"type\": \"Sensor\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost/api/devices",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["api","devices"]
+        }
+      }
+    },
+    {
+      "name": "DevicesService - Update Device",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Device1_updated\",\n  \"type\": \"Sensor\",\n  \"status\": \"INACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost/api/devices/{{deviceId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["api","devices","{{deviceId}}"]
+        }
+      }
+    },
+    {
+      "name": "DevicesService - Delete Device",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+        "url": {
+          "raw": "http://localhost/api/devices/{{deviceId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["api","devices","{{deviceId}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "jwt_token", "value": "" },
+    { "key": "userId", "value": "" },
+    { "key": "deviceId", "value": "" }
+  ]
+}

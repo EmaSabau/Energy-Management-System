@@ -1,0 +1,268 @@
+version: '3.9'
+
+services:
+  user-db:
+    image: postgres:15
+    container_name: user-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: users-db
+    ports:
+      - "5434:5432"
+    volumes:
+      - user-data:/var/lib/postgresql/data
+    networks:
+      - demo_net
+
+  user-service:
+    build:
+      context: ./user-service/demo
+      dockerfile: Dockerfile
+    container_name: user-service
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://user-db:5432/users-db
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+    env_file:
+      - .env
+    depends_on:
+      - user-db
+    networks:
+      - demo_net
+
+  auth-db:
+    image: postgres:15
+    container_name: auth-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: auth-db
+    ports:
+      - "5435:5432"
+    volumes:
+      - auth-data:/var/lib/postgresql/data
+    networks:
+      - demo_net
+
+  auth-service:
+    build:
+      context: ./auth-service/demo
+      dockerfile: Dockerfile
+    container_name: auth-service
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://auth-db:5432/auth-db
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+    env_file:
+      - .env
+    depends_on:
+      - auth-db
+    networks:
+      - demo_net
+
+  devices-db:
+    image: postgres:15
+    container_name: devices-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: devices-db
+    ports:
+      - "5436:5432"
+    volumes:
+      - devices-data:/var/lib/postgresql/data
+    networks:
+      - demo_net
+
+  devices-service:
+    build:
+      context: ./devices-service/demo
+      dockerfile: Dockerfile
+    container_name: devices-service
+    restart: always
+    ports:
+      - "8083:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://devices-db:5432/devices-db
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    env_file:
+      - .env
+    depends_on:
+      devices-db:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - demo_net
+
+  monitoring-db:
+    image: postgres:15
+    container_name: monitoring-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: monitoring-db
+    ports:
+      - "5437:5432"
+    volumes:
+      - monitoring-data:/var/lib/postgresql/data
+    networks:
+      - demo_net
+
+  websocket-service:
+    build:
+      context: ./websocket-service/demo
+      dockerfile: Dockerfile
+    container_name: websocket-service
+    restart: always
+    ports:
+      - "8085:8080"
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - demo_net
+
+  customersupport-service:
+    build:
+      context: ./customersupport-service/demo
+      dockerfile: Dockerfile
+    container_name: customersupport-service
+    restart: always
+    ports:
+      - "8086:8080"
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      GEMINI_API_URL: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent
+    env_file:
+      - .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - demo_net
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - demo_net
+
+  monitoring-service:
+    build:
+      context: ./monitoring-service/demo
+      dockerfile: Dockerfile
+    container_name: monitoring-service
+    restart: always
+    ports:
+      - "8084:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://monitoring-db:5432/monitoring-db
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    env_file:
+      - .env
+    depends_on:
+      monitoring-db:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - demo_net
+
+  simulator:
+    build:
+      context: ./simulator
+      dockerfile: Dockerfile
+    container_name: simulator
+    restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      devices-service:
+        condition: service_started
+    networks:
+      - demo_net
+
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik-service
+    restart: always
+    ports:
+      - "80:80"
+      - "8090:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./dynamic:/etc/traefik/dynamic:ro
+      - ./logs:/var/log/traefik
+    networks:
+      - demo_net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - auth-service
+      - user-service
+      - devices-service
+      - monitoring-service
+      - websocket-service
+      - customersupport-service
+      - traefik
+    networks:
+      - demo_net
+
+volumes:
+  user-data:
+  auth-data:
+  devices-data:
+  monitoring-data:
+
+networks:
+  demo_net:
+    driver: bridge
