@@ -48,7 +48,8 @@ Chatbot AI: Asistent virtual capabil să răspundă la întrebări despre sistem
 <img width="2556" height="1423" alt="Screenshot 2026-01-22 124849" src="https://github.com/user-attachments/assets/022db0ab-97e6-4a42-a3ea-0d3bfe427abb" />
 
 Custommer Suport: Clientul poate să aleagă optțiunea de a vorbi cu un administrator.
-<img width="2556" height="1423" alt="Screenshot 2026-01-22 124849" src="https://github.com/user-attachments/assets/98264fab-5750-44f1-82bc-7aff77d733f5" />
+<img width="2519" height="1414" alt="Screenshot 2026-01-22 124933" src="https://github.com/user-attachments/assets/1033fba7-3d50-4250-8c57-5c4ac70965c2" />
+
 
 <img width="2509" height="1416" alt="Screenshot 2026-01-22 124943" src="https://github.com/user-attachments/assets/e637d7e3-507e-418a-bf23-af58b538b11f" />
 
