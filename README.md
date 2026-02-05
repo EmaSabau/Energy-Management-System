@@ -32,6 +32,7 @@ CRUD Utilizatori & Dispozitive: Gestiunea completă a bazei de date de către ad
 <img width="2557" height="1422" alt="Screenshot 2026-01-22 124700" src="https://github.com/user-attachments/assets/20922149-66d5-489a-842b-865d5ba63a04" />
 
 Asociere: Maparea dispozitivelor către utilizatori specifici.
+<img width="2508" height="1415" alt="Screenshot 2026-01-22 124716" src="https://github.com/user-attachments/assets/b9009bf0-0db2-44e5-b59b-3772774e8f69" />
 
 **Comunicare Asincronă și Monitorizare**
 Messaging: Utilizarea RabbitMQ pentru a decupla simulatorul de sistemul de monitorizare.
