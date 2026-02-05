@@ -39,8 +39,7 @@ Messaging: Utilizarea RabbitMQ pentru a decupla simulatorul de sistemul de monit
 
 Procesare Orară: Agregarea automată a valorilor primite de la senzori pe parcursul fiecărei ore.
 
-Vizualizare: Grafice interactive realizate cu Recharts care afișează consumul is<img width="2490" height="1411" alt="Screenshot 2026-01-22 124816" src="https://github.com/user-attachments/assets/433edfcf-b964-4445-a235-e99521434814" />
-toric.
+Vizualizare: Grafice interactive realizate cu Recharts care afișează consumul istoric.<img width="2490" height="1411" alt="Screenshot 2026-01-22 124816" src="https://github.com/user-attachments/assets/433edfcf-b964-4445-a235-e99521434814" />
 
 **Real-Time & AI Support**
 Notificări Live: Alerte instantanee transmise prin WebSockets atunci când consumul orar depășește pragul configurat.
